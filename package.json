@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=22.18.0"
+    "node": ">=22.19.0"
   },
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
@@ -13,7 +13,8 @@
     "test": "node --experimental-strip-types --test tests/forms.test.mjs",
     "check:routes": "node scripts/verify-routes.mjs",
     "audit:browser": "node scripts/audit-browser.mjs",
-    "audit:performance": "node scripts/audit-performance.mjs"
+    "audit:performance": "node scripts/audit-performance.mjs",
+    "audit:http": "node scripts/audit-http.mjs"
   },
   "dependencies": {
     "lucide-react": "1.61.0",

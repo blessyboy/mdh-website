@@ -21,6 +21,7 @@ try {
     const context = await browser.newContext({ viewport, reducedMotion: "reduce" });
     page = await context.newPage();
     page.on("pageerror", error => report.consoleErrors.push({ viewport: viewport.width, message: error.message }));
+    page.on("console", message => { if (message.type() === "error") report.consoleErrors.push({ viewport: viewport.width, message: message.text() }); });
     for (const route of routes) {
       await page.goto(base + route, { waitUntil: "networkidle" });
       await page.evaluate(() => document.fonts.ready);
@@ -29,7 +30,7 @@ try {
         for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight) {
           scrollTo(0, y); await new Promise(resolve => setTimeout(resolve, 70));
         }
-        await Promise.all([...document.images].map(img => img.decode().catch(() => {})));
+        await Promise.all([...document.images].filter(img => img.getClientRects().length).map(img => img.decode().catch(() => {})));
         scrollTo(0, 0);
       });
       const layout = await page.evaluate(() => ({
@@ -48,6 +49,7 @@ try {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   page = await context.newPage();
   page.on("pageerror", error => report.consoleErrors.push({ message: error.message }));
+  page.on("console", message => { if (message.type() === "error") report.consoleErrors.push({ message: message.text() }); });
   async function check(name, action) { await action(); report.interactions.push(name); console.log(`PASS ${name}`); }
   await check("mobile menu Escape restores toggle focus", async () => {
     await page.goto(base + "/", { waitUntil: "networkidle" });
@@ -137,6 +139,18 @@ try {
     assert.equal(await page.getByText("Preview complete. Your email was not sent or saved.").isVisible(), true);
   });
   await context.close();
+  const noJs = await browser.newContext({ javaScriptEnabled: false });
+  const noJsPage = await noJs.newPage();
+  for (const route of ["/", "/contact", "/booking"]) {
+    await noJsPage.goto(base + route);
+    const safe = await noJsPage.locator("form").evaluateAll(forms => forms.every(form => {
+      const controls = [...form.querySelectorAll("input, select, textarea, button")];
+      return controls.length > 0 && controls.every(control => control.matches(":disabled"));
+    }));
+    assert.equal(safe, true, `${route}: forms disabled without JavaScript`);
+  }
+  report.interactions.push("all demo forms remain disabled with JavaScript unavailable");
+  await noJs.close();
 } catch (error) {
   report.failure = error.stack; console.error(error.message); process.exitCode = 1;
 } finally {

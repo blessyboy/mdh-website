@@ -1,0 +1,56 @@
+name: Verify website
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
+      PREVIEW_URL: http://127.0.0.1:3010
+      CHROME_PATH: /usr/bin/google-chrome
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Start production server and wait for readiness
+        run: |
+          mkdir -p qa
+          npm start -- --port 3010 > qa/server.log 2>&1 &
+          echo $! > qa/server.pid
+          for attempt in {1..30}; do
+            if curl --fail --silent "$PREVIEW_URL/api/health"; then exit 0; fi
+            sleep 1
+          done
+          cat qa/server.log
+          exit 1
+      - run: npm run check:routes
+      - run: npm run audit:http
+      - run: npm run audit:browser
+      - run: npm run audit:performance
+      - name: Stop production server
+        if: always()
+        run: if test -f qa/server.pid; then kill "$(cat qa/server.pid)" || true; fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: website-audit-evidence
+          path: qa/
+          retention-days: 14
