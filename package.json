@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/forms.test.mjs",
     "check:routes": "node scripts/verify-routes.mjs",
+    "check:room-rates": "node scripts/check-room-rates.mjs",
     "audit:browser": "node scripts/audit-browser.mjs",
     "audit:performance": "node scripts/audit-performance.mjs",
     "audit:http": "node scripts/audit-http.mjs"

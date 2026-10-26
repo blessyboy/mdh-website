@@ -2,6 +2,8 @@
 
 Audit date: 26 October 2026. Scope: the seven-page website preview and its Node.js production build. This audit does not certify WCAG conformance or approve a public hotel launch.
 
+Historical build note: these full-site Lighthouse/audit results predate the later hotel room-photo/rate update. See [the room-rate mapping and update scope](room-rate-mapping.md) for that change. The rates update has its own build, route, unit, and targeted responsive/accessibility/booking tests; the earlier performance scores are not new measurements of the changed pages.
+
 ## Release decision
 
 The application can be reviewed as a local design preview. Public launch remains blocked by unverified hotel content, demo-only submissions and bookings, missing operating policies, and unverified hosting/monitoring. Keep the existing noindex directives until those requirements are resolved.

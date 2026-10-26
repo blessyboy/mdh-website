@@ -19,3 +19,9 @@ Source images are copied unchanged to `public/images/rooms/`. Originals remain i
 The earlier mock Presidential Suite and invented room capacities are not part of the supplied catalog. The collection now has five categories, a nightly-budget filter, category filters, and name search. Occupancy remains null until verified; the booking form retains its existing party-size selector without enforcing fabricated per-room limits.
 
 The production-readiness report and Lighthouse scores from the previous audit describe that prior build. This content update receives its own build, route, unit, and targeted browser checks; it does not imply that the entire historic audit was rerun.
+
+## Validation of this update
+
+Seven unit tests, TypeScript checking, and the production build passed. The production standalone server passed checks for all seven routes, 28 internal links, 11 rendered image variants, booking prefills, malformed queries, and the 404 page. The targeted `npm run check:room-rates` check verified all four photo hashes and all five displayed prices, zero axe violations and no horizontal overflow at 1440px/390px/320px, budget/category filtering, empty/reset states, modal pricing, room-to-booking navigation, and two-night subtotals. Changing party size does not multiply the room rate. Suite uses its own rate and explicit image-pending state.
+
+Evidence: `qa/room-rates-check.json` and `qa/room-rates-{1440,390,320}.png`. Desktop and mobile screenshots were inspected. The live development preview `/rooms` also returned HTTP 200 with the supplied photo paths, Standard Double, and Suite placeholder.

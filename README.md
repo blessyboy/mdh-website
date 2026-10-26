@@ -28,11 +28,11 @@ The form tests use Node's TypeScript stripping. With the server running, run `np
 | --- | --- |
 | `/` | Hero, booking bar, introduction, featured rooms, amenities, gallery, review empty state, newsletter preview |
 | `/about` | Brand story, proposed mission/vision, approach, team/history pending states, image gallery |
-| `/rooms` | All four room categories, room/suite filters, guest-capacity filter, name search, empty state, detail dialogs, room-specific booking links |
+| `/rooms` | Five rate-sheet categories, supplied bedroom photos, GHS nightly rates, room/suite and budget filters, search, empty state, detail dialogs, room-specific booking links |
 | `/amenities` | All eight PRD amenity categories, service-detail pending states, dining feature |
 | `/gallery` | Category filters, six illustrative photographs, keyboard-controlled lightbox, Events empty state |
 | `/contact` | Name/email/optional phone/subject/message form, inline validation, error summary, local completion status, pending contact/social/map details |
-| `/booking` | Dates, guest and room selection, room prefill, date/capacity validation, night count, stay summary, preview completion state, FAQs |
+| `/booking` | Dates, guest and room selection, room prefill, date validation, night count, published-rate subtotal, preview completion state, FAQs |
 
 Shared navigation and footer connect to dedicated routes with an active-page indicator. Interior pages include breadcrumbs, page-specific titles, descriptions, and Open Graph text. Homepage section anchors remain available for in-page scrolling.
 
@@ -52,7 +52,7 @@ Booking dates are validated locally, including check-out after check-in. Night c
 - `src/components/modal.tsx`: native dialog wrapper with explicit forward/backward Tab containment; callers retain ownership of open/close state and focus restoration.
 - `src/lib/stay.ts` and `contact.ts`: pure validation functions, date calculations, and query normalization covered by tests.
 - Room cards, gallery, and newsletter isolate their interactive behavior. Native modal dialogs provide keyboard containment and Escape dismissal; focus is restored to the opening control.
-- `src/data/hotel.ts`: typed navigation, four room concepts and sample capacities/features, gallery categories and content. `Gallery` accepts `items` and `filterable` props so the same lightbox serves the homepage, About, and full Gallery page.
+- `src/data/rooms.ts`: the five supplied room categories, corresponding photos and GHS nightly rates, re-exported by `src/data/hotel.ts` alongside navigation and gallery content. `Gallery` accepts `items` and `filterable` props so the same lightbox serves the homepage, About, and full Gallery page.
 - `design/`: the earlier visual board and its design rationale.
 
 The page remains server-rendered; only interactive components use client-side React. Local `next/image` assets support responsive image optimization. The hero is prioritized; supporting images load lazily. Motion is limited to small CSS transitions with reduced-motion overrides. Fonts load through `next/font/local` with system fallbacks.
