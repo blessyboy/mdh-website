@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
+import sharp from "sharp";
 const base = process.env.PREVIEW_URL || "http://127.0.0.1:3010";
 const checks = [];
 for (const path of ["/", "/about", "/rooms", "/amenities", "/gallery", "/contact", "/booking"]) {
@@ -36,6 +37,12 @@ const favicon = await fetch(base + "/favicon.ico");
 assert.equal(favicon.status, 200);
 const image = await fetch(base + "/images/hero.webp");
 assert.ok(image.headers.get("cache-control")?.includes("max-age=86400"));
+const optimized = await fetch(base + "/_next/image?url=%2Fimages%2Fhero.webp&w=640&q=75", { headers: { accept: "image/webp" } });
+assert.equal(optimized.status, 200);
+const optimizedBuffer = Buffer.from(await optimized.arrayBuffer());
+const optimizedMetadata = await sharp(optimizedBuffer).metadata();
+assert.equal(optimizedMetadata.width, 640, "optimizer actually resizes the image; HTTP 200 alone is insufficient");
+assert.ok(optimizedBuffer.length < 150_000, "mobile hero stays below 150 KB");
 await mkdir("qa", { recursive: true });
-await writeFile("qa/security-http.json", JSON.stringify({ timestamp: new Date().toISOString(), checks, health: "pass", favicon: "pass", imageCache: "pass", note: "CSP permits inline scripts/styles for statically rendered Next.js bootstrap. This is defense in depth, not a strict XSS prevention policy. HTTPS termination and HSTS enforcement require deployment verification." }, null, 2));
+await writeFile("qa/security-http.json", JSON.stringify({ timestamp: new Date().toISOString(), checks, health: "pass", favicon: "pass", imageCache: "pass", optimizer: { status: "pass", width: optimizedMetadata.width, bytes: optimizedBuffer.length }, note: "CSP permits inline scripts/styles for statically rendered Next.js bootstrap. This is defense in depth, not a strict XSS prevention policy. HTTPS termination and HSTS enforcement require deployment verification." }, null, 2));
 console.log("PASS security headers on seven routes, four rejected optimizer requests, health, favicon, and image caching");

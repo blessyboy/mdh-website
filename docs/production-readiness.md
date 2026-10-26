@@ -8,6 +8,22 @@ The application can be reviewed as a local design preview. Public launch remains
 
 The final automated results are recorded in [audit-summary.json](audit-summary.json). Raw browser, screenshot, HTTP-header, dependency, and Lighthouse evidence is saved locally in `qa/`. That directory is deliberately excluded from Git; rerun the audit commands to regenerate it.
 
+## Final automated results
+
+| Page | Mobile performance | Lighthouse accessibility | Best practices | LCP |
+| --- | --- | --- | --- | --- |
+| Home | 91 | 100 | 100 | 3.4 s |
+| About | 94 | 100 | 100 | 3.1 s |
+| Rooms | 99 | 100 | 100 | 2.3 s |
+| Amenities | 97 | 100 | 100 | 2.6 s |
+| Gallery | 99 | 100 | 100 | 2.3 s |
+| Contact | 95 | 100 | 100 | 3.0 s |
+| Booking | 98 | 100 | 100 | 2.4 s |
+
+All seven pages exceed the PRD's performance-score target of 90 in this recorded run. CLS is 0 throughout; Total Blocking Time ranges from 38 to 83 ms. Home, About, Amenities, and Contact still have laboratory LCP above 2.5 seconds, so further hosted image/network/rendering optimization is appropriate even though the aggregate score passes. Lighthouse SEO is 63 for each page because preview indexing is intentionally blocked.
+
+Other passing results: zero axe violations across 21 route/viewport combinations and dynamic states; nine interaction scenarios; five validation tests; TypeScript; production build; standalone runtime; seven-route HTTP checks; 27 internal links; image variants; booking-prefill/malformed-query/404 checks; security headers; blocked image-optimizer requests; and a decoded-image resize/byte-budget regression check. The mobile 640px optimized hero measures 43,458 bytes in the HTTP regression check. Consult the generated summary for the authoritative optimizer size if a rerun differs.
+
 ## Accessibility findings and fixes
 
 | Finding | Severity | Fix |
@@ -30,6 +46,8 @@ Lighthouse 13.5.0 runs mobile audits against the production standalone server, u
 
 The initial homepage run measured performance 93, accessibility 96, best practices 96, LCP about 3.2 seconds, and CLS 0. Corrections include high fetch priority for the above-the-fold image, responsive optimization of the supplied logo, a valid favicon, removal of deprecated image `priority` use, and bounded image-source optimization. Supporting images remain lazy-loaded; fonts are local; most pages remain prerendered. Booking is intentionally request-rendered to accept query-prefilled selections.
 
+The standalone-runtime audit then exposed a deployment-specific regression: traced Sharp dependencies contained the Windows native module but omitted its required DLLs. Next.js returned HTTP 200 with the original image instead of the resized output. The requested 750px hero was still 1920px wide and 620,530 bytes; performance fell to 77 on Home and 75 on Booking in that run. The fix explicitly includes Sharp and its optional native packages in file tracing and declares Sharp as an exact production dependency. The standalone processor was verified to generate the 750px hero at 55,582 bytes. The HTTP regression check now measures actual decoded dimensions and a mobile byte budget, so a successful status alone cannot hide this failure. Purge any cached original-image fallbacks when applying this fix to an existing deployment; this local rerun used a fresh generated image cache.
+
 The performance audit command fails if any measured page scores below 90. Review LCP and other metrics as well as the aggregate score; a score above 90 does not mean every Core Web Vital threshold is met. Next.js runtime/polyfill JavaScript may still appear in Lighthouse's unused/legacy JavaScript diagnostics; it was not removed in a way that would compromise framework compatibility.
 
 SEO scores are deliberately reduced by the preview's `noindex, nofollow` header and metadata. Removing those to improve a score would expose unfinished demo content to indexing. Canonical URLs, sitemap entries, a social preview image, and verified Hotel structured data need the final domain and actual hotel details before launch.
@@ -46,6 +64,8 @@ The current app contains no authentication, account system, database, upload han
 | Broad local image optimizer scope and default resource limits | Low resource-hardening gap | Restricted to `/images/**` without source query strings, allowed no remote origins, disabled redirects, and limited source response bodies to 5 MB. Tests reject external, non-image-route, cache-busting-source, and invalid-size requests |
 | Floating dependency specifications | Low reproducibility issue | Replaced `latest` specifications with installed exact versions and retained the npm lockfile; CI uses `npm ci` |
 | Font redistribution notices absent | Low release-packaging issue | Added the official OFL license files for both bundled font families |
+
+The missing native DLL issue above was a release-blocking performance/packaging defect, not a confirmed security vulnerability. Docker still needs its own native-runtime verification; passing on Windows does not prove Linux container behavior.
 
 Final dependency audit covers production and development packages. The authoritative count is in `audit-summary.json`; zero reported advisories is a point-in-time npm database result, not proof that the software has no vulnerabilities.
 

@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Sharp's optional native shared libraries are loaded dynamically and can be
+  // omitted by tracing (confirmed on Windows). Ship the complete native package.
+  outputFileTracingIncludes: {
+    "/*": ["./node_modules/sharp/**/*", "./node_modules/@img/**/*"],
+  },
   poweredByHeader: false,
   images: {
     localPatterns: [{ pathname: "/images/**", search: "" }],

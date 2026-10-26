@@ -1,0 +1,338 @@
+{
+  "generatedAt": "2026-10-26T15:19:36.570Z",
+  "productionBuildId": "gbuzK-kFBlNVR2o30OJ4c",
+  "environment": {
+    "node": "v26.10.0",
+    "chrome": "155.0.8059.40",
+    "lighthouse": "13.5.0",
+    "platform": "win32",
+    "testedRuntime": "Next.js standalone Node server on localhost"
+  },
+  "accessibility": {
+    "axeViolations": 0,
+    "pageViewportCombinations": 21,
+    "viewportWidths": [
+      320,
+      390,
+      1440
+    ],
+    "horizontalOverflow": false,
+    "brokenImages": 0,
+    "javaScriptErrors": 0,
+    "interactionChecks": [
+      "mobile menu Escape restores toggle focus",
+      "skip link moves focus into main",
+      "room filter empty state and reset",
+      "room dialog keyboard containment, Escape, and focus restoration",
+      "gallery category, empty state, lightbox keys and focus restoration",
+      "contact validation, associated errors, and local-only success",
+      "booking prefill, invalid dates, capacity, and local-only completion",
+      "newsletter requires consent and stays local",
+      "all demo forms remain disabled with JavaScript unavailable"
+    ]
+  },
+  "performance": [
+    {
+      "route": "/",
+      "fetchTime": "2026-10-26T15:11:44.802Z",
+      "scores": {
+        "performance": 91,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 63
+      },
+      "metrics": {
+        "first-contentful-paint": {
+          "value": 928.3794,
+          "display": "0.9 s"
+        },
+        "largest-contentful-paint": {
+          "value": 3415.66395,
+          "display": "3.4 s"
+        },
+        "speed-index": {
+          "value": 928.3794,
+          "display": "0.9 s"
+        },
+        "total-blocking-time": {
+          "value": 82.99999999999977,
+          "display": "80 ms"
+        },
+        "cumulative-layout-shift": {
+          "value": 0,
+          "display": "0"
+        },
+        "server-response-time": {
+          "value": 10,
+          "display": "Root document took 10 ms"
+        }
+      },
+      "warnings": []
+    },
+    {
+      "route": "/about",
+      "fetchTime": "2026-10-26T15:11:54.222Z",
+      "scores": {
+        "performance": 94,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 63
+      },
+      "metrics": {
+        "first-contentful-paint": {
+          "value": 763.8520000000001,
+          "display": "0.8 s"
+        },
+        "largest-contentful-paint": {
+          "value": 3127.241,
+          "display": "3.1 s"
+        },
+        "speed-index": {
+          "value": 763.8520000000001,
+          "display": "0.8 s"
+        },
+        "total-blocking-time": {
+          "value": 42.5,
+          "display": "40 ms"
+        },
+        "cumulative-layout-shift": {
+          "value": 0,
+          "display": "0"
+        },
+        "server-response-time": {
+          "value": 5,
+          "display": "Root document took 10 ms"
+        }
+      },
+      "warnings": []
+    },
+    {
+      "route": "/rooms",
+      "fetchTime": "2026-10-26T15:12:02.236Z",
+      "scores": {
+        "performance": 99,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 63
+      },
+      "metrics": {
+        "first-contentful-paint": {
+          "value": 865.524,
+          "display": "0.9 s"
+        },
+        "largest-contentful-paint": {
+          "value": 2263.048,
+          "display": "2.3 s"
+        },
+        "speed-index": {
+          "value": 865.524,
+          "display": "0.9 s"
+        },
+        "total-blocking-time": {
+          "value": 52.5,
+          "display": "50 ms"
+        },
+        "cumulative-layout-shift": {
+          "value": 0,
+          "display": "0"
+        },
+        "server-response-time": {
+          "value": 6,
+          "display": "Root document took 10 ms"
+        }
+      },
+      "warnings": []
+    },
+    {
+      "route": "/amenities",
+      "fetchTime": "2026-10-26T15:12:10.239Z",
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 63
+      },
+      "metrics": {
+        "first-contentful-paint": {
+          "value": 763.3639000000001,
+          "display": "0.8 s"
+        },
+        "largest-contentful-paint": {
+          "value": 2563.3638999999994,
+          "display": "2.6 s"
+        },
+        "speed-index": {
+          "value": 763.3639000000001,
+          "display": "0.8 s"
+        },
+        "total-blocking-time": {
+          "value": 60.5,
+          "display": "60 ms"
+        },
+        "cumulative-layout-shift": {
+          "value": 0,
+          "display": "0"
+        },
+        "server-response-time": {
+          "value": 4,
+          "display": "Root document took 0 ms"
+        }
+      },
+      "warnings": []
+    },
+    {
+      "route": "/gallery",
+      "fetchTime": "2026-10-26T15:12:17.623Z",
+      "scores": {
+        "performance": 99,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 63
+      },
+      "metrics": {
+        "first-contentful-paint": {
+          "value": 764.9891,
+          "display": "0.8 s"
+        },
+        "largest-contentful-paint": {
+          "value": 2264.9891,
+          "display": "2.3 s"
+        },
+        "speed-index": {
+          "value": 764.9891,
+          "display": "0.8 s"
+        },
+        "total-blocking-time": {
+          "value": 50.00000000000023,
+          "display": "50 ms"
+        },
+        "cumulative-layout-shift": {
+          "value": 0,
+          "display": "0"
+        },
+        "server-response-time": {
+          "value": 3,
+          "display": "Root document took 0 ms"
+        }
+      },
+      "warnings": []
+    },
+    {
+      "route": "/contact",
+      "fetchTime": "2026-10-26T15:12:25.136Z",
+      "scores": {
+        "performance": 95,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 63
+      },
+      "metrics": {
+        "first-contentful-paint": {
+          "value": 859.86385,
+          "display": "0.9 s"
+        },
+        "largest-contentful-paint": {
+          "value": 2965.59155,
+          "display": "3.0 s"
+        },
+        "speed-index": {
+          "value": 2109.6824195178388,
+          "display": "2.1 s"
+        },
+        "total-blocking-time": {
+          "value": 38,
+          "display": "40 ms"
+        },
+        "cumulative-layout-shift": {
+          "value": 0,
+          "display": "0"
+        },
+        "server-response-time": {
+          "value": 8,
+          "display": "Root document took 10 ms"
+        }
+      },
+      "warnings": []
+    },
+    {
+      "route": "/booking",
+      "fetchTime": "2026-10-26T15:12:34.148Z",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 63
+      },
+      "metrics": {
+        "first-contentful-paint": {
+          "value": 761.8788999999999,
+          "display": "0.8 s"
+        },
+        "largest-contentful-paint": {
+          "value": 2362.8486250000005,
+          "display": "2.4 s"
+        },
+        "speed-index": {
+          "value": 761.8788999999999,
+          "display": "0.8 s"
+        },
+        "total-blocking-time": {
+          "value": 70.5,
+          "display": "70 ms"
+        },
+        "cumulative-layout-shift": {
+          "value": 0,
+          "display": "0"
+        },
+        "server-response-time": {
+          "value": 28,
+          "display": "Root document took 30 ms"
+        }
+      },
+      "warnings": []
+    }
+  ],
+  "httpSecurity": {
+    "checkedAt": "2026-10-26T15:11:36.399Z",
+    "pageHeadersChecked": 7,
+    "rejectedOptimizerRequests": 4,
+    "health": "pass",
+    "favicon": "pass",
+    "imageCache": "pass",
+    "optimizer": {
+      "status": "pass",
+      "width": 640,
+      "bytes": 43458
+    },
+    "cspLimitation": "CSP permits inline scripts/styles for statically rendered Next.js bootstrap. This is defense in depth, not a strict XSS prevention policy. HTTPS termination and HSTS enforcement require deployment verification."
+  },
+  "dependencies": {
+    "auditFileModifiedAt": "2026-10-26T14:43:05.169Z",
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "dependencyCounts": {
+      "prod": 21,
+      "dev": 175,
+      "optional": 81,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 233
+    }
+  },
+  "launchReady": false,
+  "releaseGates": [
+    "Verified hotel content, property imagery, rates and policies",
+    "Real booking/enquiry/newsletter integration or an approved informational-only scope",
+    "Screen-reader, Safari/Firefox and physical-device verification",
+    "Hosted staging performance and real-user Core Web Vitals",
+    "Node 24 and Docker/container execution; GitHub-hosted workflow execution",
+    "TLS/edge configuration, monitoring and rollback validation",
+    "Final domain, sharing assets, sitemap/structured data, and deliberate removal of preview noindex"
+  ]
+}
