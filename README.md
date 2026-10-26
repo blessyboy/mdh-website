@@ -31,14 +31,14 @@ The form tests use Node's TypeScript stripping. With the server running, run `np
 | `/rooms` | Five rate-sheet categories, supplied bedroom photos, GHS nightly rates, room/suite and budget filters, search, empty state, detail dialogs, room-specific booking links |
 | `/amenities` | All eight PRD amenity categories, service-detail pending states, dining feature |
 | `/gallery` | Category filters, six illustrative photographs, keyboard-controlled lightbox, Events empty state |
-| `/contact` | Name/email/optional phone/subject/message form, inline validation, error summary, local completion status, pending contact/social/map details |
+| `/contact` | Live Resend enquiry form, validation/loading/error/success states, supplied email/phone/address/GhanaPostGPS details, map and review links |
 | `/booking` | Dates, guest and room selection, room prefill, date validation, night count, published-rate subtotal, preview completion state, FAQs |
 
 Shared navigation and footer connect to dedicated routes with an active-page indicator. Interior pages include breadcrumbs, page-specific titles, descriptions, and Open Graph text. Homepage section anchors remain available for in-page scrolling.
 
 The Rooms page, homepage room cards, and booking summary use supplied hotel bedroom photographs and nightly rates from `Our rooms/Room Rates.docx`. [The room-rate mapping](docs/room-rate-mapping.md) records all five categories and source files. The separate Suite has a photo-pending state. Other imagery remains illustrative stock photography, with download URLs in `public/images/sources.json`. Room occupancy, rate inclusions/taxes/fees, reviews, address, phone, email, and social channels remain unconfirmed. The supplied logo and bedroom image originals are preserved without alteration.
 
-Booking dates are validated locally, including check-out after check-in. Night counts use UTC calendar dates to avoid daylight-saving errors. Room capacities are unknown and are not fabricated or used to reject a party size. Room-card and homepage links preserve selected room/dates/guests on the booking page. Repeated or invalid query values are normalized. The summary multiplies the published nightly room rate by nights using integer Ghana pesewas; it does not charge per guest, include unconfirmed taxes/fees, reserve a room, check inventory, or transmit information. Contact and newsletter submissions only demonstrate local form validation; no message or email is sent, persisted, or subscribed. The site is marked noindex during review.
+Booking dates are validated locally, including check-out after check-in. Night counts use UTC calendar dates to avoid daylight-saving errors. Room capacities are unknown and are not fabricated or used to reject a party size. Room-card and homepage links preserve selected room/dates/guests on the booking page. Repeated or invalid query values are normalized. The summary multiplies the published nightly room rate by nights using integer Ghana pesewas; it does not charge per guest, include unconfirmed taxes/fees, reserve a room, check inventory, or transmit booking information. The newsletter remains a local preview. The contact form now sends real enquiries through the server-side Resend adapter when configured; see [contact email setup and verified delivery](docs/contact-email.md). The site is marked noindex during review.
 
 ## Component architecture
 
@@ -48,9 +48,11 @@ Booking dates are validated locally, including check-out after check-in. Night c
 - `src/components/booking.tsx`: booking links and homepage booking bar; `BookButton` accepts an optional room preference, label, variant, and className. Example: `<BookButton room="Deluxe Room" variant="outline">Plan your stay</BookButton>`. Navigation now leads to `/booking` rather than the former booking modal.
 - `src/components/page-intro.tsx`: shared image banner, page heading and breadcrumb; `PageCTA` provides a reusable room-exploration prompt.
 - `src/components/room-filters.tsx`, `booking-form.tsx`, and `contact-form.tsx`: isolated client-side collection and form behavior.
-- `src/components/preview-form.tsx`: shared hydration gate that prevents native form submission before the local demo handler is ready, including when JavaScript is unavailable.
+- `src/components/preview-form.tsx`: shared hydration gate that prevents native GET submission before the client handler is ready, including when JavaScript is unavailable. It can disable controls during an async send.
 - `src/components/modal.tsx`: native dialog wrapper with explicit forward/backward Tab containment; callers retain ownership of open/close state and focus restoration.
 - `src/lib/stay.ts` and `contact.ts`: pure validation functions, date calculations, and query normalization covered by tests.
+- `src/data/contact.ts`: supplied public contact details used by the page and footer; private sender/recipient settings stay in environment configuration.
+- `src/app/api/contact/route.ts` and `src/server/`: real enquiry endpoint, bounded validation/abuse/replay controls, and server-only Resend sending adapter. `CONTACT_TO_EMAIL` changes the private recipient without frontend changes.
 - Room cards, gallery, and newsletter isolate their interactive behavior. Native modal dialogs provide keyboard containment and Escape dismissal; focus is restored to the opening control.
 - `src/data/rooms.ts`: the five supplied room categories, corresponding photos and GHS nightly rates, re-exported by `src/data/hotel.ts` alongside navigation and gallery content. `Gallery` accepts `items` and `filterable` props so the same lightbox serves the homepage, About, and full Gallery page.
 - `design/`: the earlier visual board and its design rationale.
@@ -59,7 +61,7 @@ The page remains server-rendered; only interactive components use client-side Re
 
 ## Architecture boundary
 
-This phase needs no database, authentication, or backend API. When real booking is introduced, place availability and reservation writes behind a separate service, with authoritative server validation and inventory controls. Do not turn the preview summary into a reservation confirmation. The frontend can deploy separately from that future service.
+The website has a real contact-email backend route, with no database or account system. The mail adapter uses server-only settings, same-origin checks, bounded request/rate/replay handling, and plain-text email. Current rate limiting is per Node process; add shared edge/Redis limits before horizontal/serverless scaling. When real booking is introduced, place availability and reservation writes behind a separate service, with authoritative validation and inventory controls. Do not turn the preview summary into a reservation confirmation. The frontend can deploy separately from that future service.
 
 Before public launch: confirm hotel content and image rights; replace the low-resolution logo if a better original is available; add verified contact details, privacy information, and booking policies; connect newsletter/booking services; configure the real canonical domain, social image, and verified Hotel structured data; complete hosted/cross-browser and manual assistive-technology checks, then deliberately remove preview noindex directives. See [the production-readiness report](docs/production-readiness.md) for findings and unresolved release gates. No public deployment is claimed.
 

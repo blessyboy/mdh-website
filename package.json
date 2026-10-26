@@ -13,6 +13,7 @@
     "test": "node --experimental-strip-types --test tests/forms.test.mjs tests/contact-api.test.mjs",
     "check:routes": "node scripts/verify-routes.mjs",
     "check:room-rates": "node scripts/check-room-rates.mjs",
+    "check:contact": "node scripts/check-contact-page.mjs",
     "audit:browser": "node scripts/audit-browser.mjs",
     "audit:performance": "node scripts/audit-performance.mjs",
     "audit:http": "node scripts/audit-http.mjs"

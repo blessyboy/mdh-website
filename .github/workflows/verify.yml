@@ -45,6 +45,7 @@ jobs:
       - run: npm run audit:http
       - run: npm run audit:browser
       - run: npm run check:room-rates
+      - run: npm run check:contact
       - run: npm run audit:performance
       - name: Stop production server
         if: always()

@@ -4,6 +4,8 @@ Audit date: 26 October 2026. Scope: the seven-page website preview and its Node.
 
 Historical build note: these full-site Lighthouse/audit results predate the later hotel room-photo/rate update. See [the room-rate mapping and update scope](room-rate-mapping.md) for that change. The rates update has its own build, route, unit, and targeted responsive/accessibility/booking tests; the earlier performance scores are not new measurements of the changed pages.
 
+The subsequent [live contact email implementation](contact-email.md) adds an actual POST API and Resend adapter. Statements below about the absence of submission APIs describe the historical audited build. See that contact report for current configuration, tests, verified local inbox delivery, and remaining production-domain requirements.
+
 ## Release decision
 
 The application can be reviewed as a local design preview. Public launch remains blocked by unverified hotel content, demo-only submissions and bookings, missing operating policies, and unverified hosting/monitoring. Keep the existing noindex directives until those requirements are resolved.
