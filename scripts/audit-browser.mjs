@@ -70,12 +70,12 @@ try {
   });
   await check("room filter empty state and reset", async () => {
     await page.goto(base + "/rooms", { waitUntil: "networkidle" });
-    await page.getByRole("button", { name: "Rooms", exact: true }).click();
-    await page.locator(".collection-fields select").selectOption("6");
+    await page.getByRole("button", { name: "Suites", exact: true }).click();
+    await page.locator(".collection-fields select").selectOption("65000");
     assert.equal(await page.getByRole("heading", { name: "A different kind of stay?" }).isVisible(), true);
     await axe("empty room collection");
     await page.getByRole("button", { name: "Reset filters" }).click();
-    assert.equal(await page.locator(".room-card").count(), 4);
+    assert.equal(await page.locator(".room-card").count(), 5);
   });
   await check("room dialog keyboard containment, Escape, and focus restoration", async () => {
     const trigger = page.getByRole("button", { name: "Explore room: Standard Room", exact: true });
@@ -114,9 +114,9 @@ try {
     assert.equal(await page.getByText("Your enquiry passed validation.", { exact: false }).isVisible(), true);
     assert.equal(posts.length, 0);
   });
-  await check("booking prefill, invalid dates, capacity, and local-only completion", async () => {
-    await page.goto(base + "/booking?room=Presidential+Suite&guests=6", { waitUntil: "networkidle" });
-    assert.equal(await page.locator("#stay-room").inputValue(), "Presidential Suite");
+  await check("booking prefill, dates, published rates, and local-only completion", async () => {
+    await page.goto(base + "/booking?room=Suite&guests=6", { waitUntil: "networkidle" });
+    assert.equal(await page.locator("#stay-room").inputValue(), "Suite");
     assert.equal(await page.locator("#stay-guests").inputValue(), "6");
     await page.getByRole("button", { name: "Preview stay summary" }).click();
     assert.equal(await page.locator(".form-error[role=alert]").isVisible(), true);
@@ -126,8 +126,8 @@ try {
     const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
     await page.locator("#stay-checkIn").fill(iso(tomorrow)); await page.locator("#stay-checkOut").fill(iso(later));
     await page.locator("#stay-room").selectOption("Standard Room"); await page.getByRole("button", { name: "Preview stay summary" }).click();
-    assert.equal(await page.locator("#guests-error").isVisible(), true);
-    await page.locator("#stay-room").selectOption("Presidential Suite");
+    assert.equal(await page.locator(".summary-total strong").innerText(), "GH¢900.00");
+    await page.locator("#stay-room").selectOption("Suite");
     const posts = []; page.on("request", request => { if (request.method() === "POST") posts.push(request.url()); });
     await page.getByRole("button", { name: "Preview stay summary" }).click();
     assert.equal(await page.getByRole("heading", { name: "Your stay preview is ready." }).isVisible(), true);

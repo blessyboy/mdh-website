@@ -19,14 +19,15 @@ export function stayNights(checkIn: string, checkOut: string) {
   if (!validDate(checkIn) || !validDate(checkOut) || checkOut <= checkIn) return 0;
   return Math.round((Date.parse(`${checkOut}T12:00:00Z`) - Date.parse(`${checkIn}T12:00:00Z`)) / 86400000);
 }
-export function validateStay(stay: Stay, today: string, capacities: Record<string, number>): StayErrors {
+export function validateStay(stay: Stay, today: string, capacities: Record<string, number | null>): StayErrors {
   const errors: StayErrors = {};
   if (!validDate(stay.checkIn) || stay.checkIn < today) errors.checkIn = "Choose a check-in date today or later.";
   if (!validDate(stay.checkOut)) errors.checkOut = "Choose a valid check-out date.";
   else if (validDate(stay.checkIn) && stay.checkOut <= stay.checkIn) errors.checkOut = "Check-out must be after check-in.";
   if (!/^[1-6]$/.test(stay.guests)) errors.guests = "Select between 1 and 6 guests.";
+  const capacity = capacities[stay.room];
   if (!Object.hasOwn(capacities, stay.room)) errors.room = "Choose a room type.";
-  else if (!errors.guests && Number(stay.guests) > capacities[stay.room]) errors.guests = "Choose a larger room or fewer guests for this room concept.";
+  else if (!errors.guests && typeof capacity === "number" && Number(stay.guests) > capacity) errors.guests = "Choose a larger room or fewer guests for this room.";
   return errors;
 }
 export function normalizeStay(query: Record<string, string | string[] | undefined>, roomNames: readonly string[]): Stay {

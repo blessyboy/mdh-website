@@ -11,7 +11,7 @@ export function SiteFooter() {
       <div><h3>Explore</h3><nav aria-label="Footer navigation">{navigation.slice(1).map(item => <Link key={item.href} href={item.href}>{item.label}<ArrowUpRight size={14} aria-hidden="true" /></Link>)}<Link href="/booking">Plan your stay<ArrowUpRight size={14} aria-hidden="true" /></Link></nav></div>
       <div className="footer-contact"><h3>Find us</h3><p><MapPin size={17} aria-hidden="true" /><span>Hotel address<br /><small>Details coming soon</small></span></p><p><Phone size={17} aria-hidden="true" /><span>Reservations telephone<br /><small>Details coming soon</small></span></p><p><Mail size={17} aria-hidden="true" /><span>Hotel email<br /><small>Details coming soon</small></span></p></div>
       <div className="footer-note"><h3>A warm welcome awaits.</h3><p>Our contact information and official social channels will be available here once confirmed.</p><Link href="/about">Get to know Meridian<ArrowUpRight size={16} aria-hidden="true" /></Link></div>
-    </div><div className="footer-bottom"><p>© {new Date().getFullYear()} Meridian Drive Hotel.</p><p>Design preview · Illustrative photography</p><a href="#top">Back to top ↑</a></div>
+    </div><div className="footer-bottom"><p>© {new Date().getFullYear()} Meridian Drive Hotel.</p><p>Design preview · Some photographs are illustrative</p><a href="#top">Back to top ↑</a></div>
   </div></footer>;
 }
 

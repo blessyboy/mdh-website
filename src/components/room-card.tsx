@@ -1,21 +1,20 @@
 ﻿"use client";
-
 import Image from "next/image";
-import { Modal } from "./modal";
-import { ArrowUpRight, X } from "lucide-react";
+import { ArrowUpRight, BedDouble, X } from "lucide-react";
 import { useRef } from "react";
-import { rooms, roomCollection } from "@/data/hotel";
+import type { HotelRoom } from "@/data/rooms";
+import { formatGhs } from "@/lib/rates";
+import { Modal } from "./modal";
 import { BookButton } from "./booking";
 
-type Room = (typeof rooms)[number] | (typeof roomCollection)[number];
-export function RoomCard({ room, index, headingLevel = 3 }: { room: Room; index: number; headingLevel?: 2 | 3 }) {
+export function RoomCard({ room, index, headingLevel = 3 }: { room: HotelRoom; index: number; headingLevel?: 2 | 3 }) {
   const Heading = headingLevel === 2 ? "h2" : "h3";
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
-  return <article className="room-card"><div className="room-image"><Image src={room.image} alt={`Illustrative interior for the ${room.name} concept`} fill sizes="(max-width: 700px) 100vw, (max-width: 1000px) 50vw, 33vw" /><span className="image-label">Room concept</span></div>
-    <div className="room-body"><p className="room-category"><span aria-hidden="true">0{index + 1}</span>{room.category}</p><Heading className="room-title">{room.name}</Heading><p>{room.description}</p>{"capacity" in room && <div className="room-specs"><span>Up to {room.capacity} guests · sample capacity</span><ul>{room.features.map(feature => <li key={feature}>{feature}</li>)}</ul><small>Illustrative features, pending confirmation</small></div>}<div className="room-bottom"><span>Rates coming soon</span><button ref={trigger} onClick={() => dialog.current?.showModal()} className="room-details" aria-label={`Explore room: ${room.name}`}>Explore room<ArrowUpRight size={17} aria-hidden="true" /></button></div>{"capacity" in room && <BookButton room={room.name} className="room-book">Plan your stay</BookButton>}</div>
-    <Modal className="modal room-modal" ref={dialog} aria-labelledby={`title-${room.id}`} onClose={() => trigger.current?.focus()} onClick={e => { if (e.target === e.currentTarget) dialog.current?.close(); }}><button className="icon-button modal-close" aria-label="Close room details" onClick={() => dialog.current?.close()}><X /></button><div className="room-modal-image"><Image src={room.image} alt={`Illustrative ${room.name} interior`} fill sizes="600px" /></div><div className="room-modal-body"><p className="eyebrow">Room concept · Illustrative photograph</p><h2 id={`title-${room.id}`}>{room.name}</h2><p>{room.detail}</p><p className="fine-print">Final features, capacity, and nightly rates are pending confirmation.</p><BookButton room={room.name}>Plan a stay in this room</BookButton></div></Modal>
+  const photo = room.image;
+  return <article className="room-card" data-room-id={room.id}>
+    <div className="room-image">{photo ? <><Image src={photo} alt={`${room.name} at Meridian Drive Hotel`} fill sizes="(max-width: 600px) 100vw, 50vw" /><span className="image-label">Hotel photograph</span></> : <div className="room-photo-pending"><BedDouble size={42} strokeWidth={1.1} aria-hidden="true" /><span>Suite photograph coming soon</span></div>}</div>
+    <div className="room-body"><p className="room-category"><span aria-hidden="true">0{index + 1}</span>{room.category}</p><Heading className="room-title">{room.name}</Heading><p>{room.description}</p><div className="room-bottom"><span className="room-rate"><strong>{formatGhs(room.nightlyRateMinor)}</strong><small> / night</small></span><button ref={trigger} onClick={() => dialog.current?.showModal()} className="room-details" aria-label={`Explore room: ${room.name}`}>Explore room<ArrowUpRight size={17} aria-hidden="true" /></button></div><BookButton room={room.name} className="room-book">Plan your stay</BookButton></div>
+    <Modal className="modal room-modal" ref={dialog} aria-labelledby={`title-${room.id}`} onClose={() => trigger.current?.focus()} onClick={event => { if (event.target === event.currentTarget) dialog.current?.close(); }}><button className="icon-button modal-close" aria-label="Close room details" onClick={() => dialog.current?.close()}><X /></button><div className="room-modal-image">{photo ? <Image src={photo} alt={`${room.name} at Meridian Drive Hotel`} fill sizes="600px" /> : <div className="room-photo-pending"><BedDouble size={42} aria-hidden="true" /><span>Suite photograph coming soon</span></div>}</div><div className="room-modal-body"><p className="eyebrow">Meridian Drive Hotel · {room.kind === "suite" ? "Suite" : "Our rooms"}</p><h2 id={`title-${room.id}`}>{room.name}</h2><p>{room.detail}</p><div className="modal-room-rate"><strong>{formatGhs(room.nightlyRateMinor)}</strong><span>per night</span></div><p className="fine-print">Please confirm occupancy, availability, taxes, fees, and rate inclusions with the hotel. Booking is currently a preview.</p><BookButton room={room.name}>Plan a stay in this room</BookButton></div></Modal>
   </article>;
 }
-
-

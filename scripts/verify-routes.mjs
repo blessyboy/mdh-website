@@ -39,10 +39,10 @@ for (const asset of assets) {
   assert.ok(response.headers.get("content-type")?.startsWith("image/"), `${asset}: image content type`);
   await response.arrayBuffer();
 }
-const selected = await getPage("/booking?room=Presidential+Suite&guests=6&checkIn=2027-01-01&checkOut=2027-01-03");
+const selected = await getPage("/booking?room=Suite&guests=6&checkIn=2027-01-01&checkOut=2027-01-03");
 assert.ok(selected.includes('value="2027-01-01"'), "booking link preserves check-in");
 assert.ok(selected.includes('value="2027-01-03"'), "booking link preserves check-out");
-assert.ok(/<option[^>]*selected[^>]*>Presidential Suite<\/option>/.test(selected), "booking link preselects room");
+assert.ok(/<option[^>]*selected[^>]*>Suite<\/option>/.test(selected), "booking link preselects room");
 assert.ok(/<option[^>]*value="6"[^>]*selected/.test(selected), "booking link preselects guests");
 const repeated = await getPage("/booking?room=Standard+Room&room=Executive+Suite&guests=999&checkIn=invalid");
 assert.ok(repeated.includes("Your stay, your way."), "malformed/repeated query renders safely");

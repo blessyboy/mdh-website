@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { validDate, nextDay, stayNights, normalizeStay, validateStay } from "../src/lib/stay.ts";
 import { validateContact } from "../src/lib/contact.ts";
+import { formatGhs, roomSubtotal } from "../src/lib/rates.ts";
+import { roomCollection } from "../src/data/rooms.ts";
 
 const capacities = { "Standard Room": 2, "Executive Suite": 4, "Presidential Suite": 6 };
 const stay = { checkIn: "2026-10-26", checkOut: "2026-10-28", guests: "2", room: "Standard Room" };
@@ -40,4 +42,19 @@ test("contact validation accepts an optional phone and catches all required fiel
   assert.equal(Object.keys(validateContact({ name: " ", email: "invalid", phone: "abcdefg", subject: "unexpected", message: "short" })).length, 5);
   assert.deepEqual(validateContact({ ...message, phone: "+233 20 123 4567" }), {});
   assert.ok(validateContact({ ...message, message: "a".repeat(3001) }).message);
+});
+test("room rates match the supplied rate sheet and do not fabricate occupancy", () => {
+  assert.deepEqual(roomCollection.map(room => [room.name, room.nightlyRateMinor]), [["Standard Room",45000],["Standard Double",65000],["Deluxe Room",75000],["Executive Room",85000],["Suite",105000]]);
+  assert.equal(roomCollection.find(room => room.name === "Suite").image, null);
+  assert.ok(roomCollection.every(room => room.capacity === null));
+  assert.deepEqual(validateStay({ ...stay, guests: "6" }, "2026-10-26", { "Standard Room": null }), {});
+});
+test("rate totals use integer minor units and count room nights, not guests", () => {
+  assert.equal(roomSubtotal(65000, 2), 130000);
+  assert.equal(roomSubtotal(105000, 3), 315000);
+  assert.equal(roomSubtotal(45000, 0), null);
+  assert.equal(roomSubtotal(45000, -1), null);
+  assert.equal(roomSubtotal(45000, 1.5), null);
+  assert.equal(formatGhs(130000), "GH¢1,300.00");
+  assert.equal(formatGhs(105000), "GH¢1,050.00");
 });

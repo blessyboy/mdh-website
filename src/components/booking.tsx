@@ -28,6 +28,6 @@ export function BookingBar() {
     <label>Check-out<input type="date" name="checkOut" aria-label="Check-out date" required min={checkIn ? nextDay(checkIn) : nextDay(today)} value={checkOut} onChange={e => setCheckOut(e.target.value)} /></label>
     <label>Guests<select name="guests" defaultValue="2">{[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n} {n === 1 ? "guest" : "guests"}</option>)}</select></label>
     <Button type="submit">Plan your stay<ArrowRight size={17} aria-hidden="true" /></Button>
-  </PreviewForm><p className="booking-disclaimer">Booking preview · availability and rates to be confirmed</p></div>;
+  </PreviewForm><p className="booking-disclaimer">Booking preview · published room rates apply; availability to be confirmed</p></div>;
 }
 
