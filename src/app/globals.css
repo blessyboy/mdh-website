@@ -77,3 +77,4 @@ main:focus{outline:none}
 
 
 .preview-fields{border:0;padding:0;margin:0;min-width:0}.booking-bar .preview-fields{display:contents}
+.form-error a{display:flex;min-height:44px;align-items:center;padding-block:8px}

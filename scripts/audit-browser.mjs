@@ -1,4 +1,4 @@
-import { chromium } from "playwright-core";
+﻿import { chromium } from "playwright-core";
 import AxeBuilder from "@axe-core/playwright";
 import { mkdir, writeFile } from "node:fs/promises";
 import assert from "node:assert/strict";
@@ -10,6 +10,7 @@ await mkdir("qa", { recursive: true });
 const browser = await chromium.launch({ executablePath, headless: true });
 const report = { timestamp: new Date().toISOString(), base, browser: browser.version(), pages: [], interactions: [], consoleErrors: [], violations: [] };
 const routes = ["/", "/about", "/rooms", "/amenities", "/gallery", "/contact", "/booking"];
+const viewports = process.env.AUDIT_INTERACTIONS_ONLY ? [] : [{ width: 1440, height: 1000 }, { width: 390, height: 844 }, { width: 320, height: 800 }];
 let page;
 async function axe(name) {
   const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"]).analyze();
@@ -17,7 +18,7 @@ async function axe(name) {
   return result.violations.length;
 }
 try {
-  for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }, { width: 320, height: 800 }]) {
+  for (const viewport of viewports) {
     const context = await browser.newContext({ viewport, reducedMotion: "reduce" });
     page = await context.newPage();
     page.on("pageerror", error => report.consoleErrors.push({ viewport: viewport.width, message: error.message }));
@@ -70,7 +71,7 @@ try {
   await check("room filter empty state and reset", async () => {
     await page.goto(base + "/rooms", { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Rooms", exact: true }).click();
-    await page.getByLabel("Guests", { exact: true }).selectOption("6");
+    await page.locator(".collection-fields select").selectOption("6");
     assert.equal(await page.getByRole("heading", { name: "A different kind of stay?" }).isVisible(), true);
     await axe("empty room collection");
     await page.getByRole("button", { name: "Reset filters" }).click();
@@ -81,6 +82,9 @@ try {
     await trigger.click();
     assert.equal(await page.getByRole("dialog").isVisible(), true);
     await axe("room dialog open");
+    await page.getByRole("button", { name: "Close room details", exact: true }).focus();
+    await page.keyboard.press("Shift+Tab");
+    assert.equal(await page.getByRole("dialog").evaluate(el => el.contains(document.activeElement)), true);
     for (let i = 0; i < 5; i++) { await page.keyboard.press("Tab"); assert.equal(await page.getByRole("dialog").evaluate(el => el.contains(document.activeElement)), true); }
     await page.keyboard.press("Escape");
     assert.equal(await trigger.evaluate(el => el === document.activeElement), true);
@@ -100,8 +104,8 @@ try {
   await check("contact validation, associated errors, and local-only success", async () => {
     await page.goto(base + "/contact", { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Preview your enquiry" }).click();
-    assert.equal(await page.getByRole("alert").isVisible(), true);
-    assert.equal(await page.getByRole("alert").evaluate(el => el === document.activeElement), true);
+    assert.equal(await page.locator(".form-error[role=alert]").isVisible(), true);
+    assert.equal(await page.locator(".form-error[role=alert]").evaluate(el => el === document.activeElement), true);
     await axe("contact validation errors");
     await page.locator("#contact-name").fill("Test Guest"); await page.locator("#contact-email").fill("test@example.com");
     await page.locator("#contact-subject").selectOption("General enquiry"); await page.locator("#contact-message").fill("A local form validation check only.");
@@ -115,7 +119,7 @@ try {
     assert.equal(await page.locator("#stay-room").inputValue(), "Presidential Suite");
     assert.equal(await page.locator("#stay-guests").inputValue(), "6");
     await page.getByRole("button", { name: "Preview stay summary" }).click();
-    assert.equal(await page.getByRole("alert").isVisible(), true);
+    assert.equal(await page.locator(".form-error[role=alert]").isVisible(), true);
     await axe("booking validation errors");
     const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
     const later = new Date(); later.setDate(later.getDate() + 3);
@@ -159,3 +163,4 @@ try {
 }
 if (report.violations.length || report.pages.some(p => p.scrollWidth > p.width || p.h1 !== 1 || p.brokenImages.length) || report.consoleErrors.length) process.exitCode = 1;
 console.log(`Saved qa/browser-${label}.json: ${report.violations.length} axe violations, ${report.interactions.length} interaction checks`);
+
