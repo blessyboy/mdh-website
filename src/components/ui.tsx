@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
 export function Button({ variant = "primary", className = "", ...props }: ComponentProps<"button"> & { variant?: "primary" | "outline" | "light" }) {
@@ -6,7 +7,7 @@ export function Button({ variant = "primary", className = "", ...props }: Compon
 }
 
 export function TextLink({ href, children, light = false }: { href: string; children: ReactNode; light?: boolean }) {
-  return <a href={href} className={`text-link${light ? " text-link--light" : ""}`}>{children}<ArrowUpRight size={17} aria-hidden="true" /></a>;
+  return <Link href={href} className={`text-link${light ? " text-link--light" : ""}`}>{children}<ArrowUpRight size={17} aria-hidden="true" /></Link>;
 }
 
 export function SectionHeading({ eyebrow, title, description, children }: { eyebrow: string; title: ReactNode; description?: string; children?: ReactNode }) {

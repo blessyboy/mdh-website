@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { contactSubjects, validateContact, type ContactMessage } from "@/lib/contact";
 import { Button } from "./ui";
@@ -9,11 +9,11 @@ export function ContactForm() {
   const [errors, setErrors] = useState<Partial<Record<keyof ContactMessage, string>>>({});
   const [submitted, setSubmitted] = useState(false);
   const errorSummary = useRef<HTMLDivElement>(null);
-  useEffect(() => { if (Object.keys(errors).length) errorSummary.current?.focus(); }, [errors]);
   function change(field: keyof ContactMessage, value: string) { setValues(current => ({ ...current, [field]: value })); setErrors(current => ({ ...current, [field]: undefined })); setSubmitted(false); }
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const nextErrors = validateContact(values); setErrors(nextErrors);
     if (!Object.keys(nextErrors).length) { setSubmitted(true); setValues(empty); }
+    else { setSubmitted(false); requestAnimationFrame(() => errorSummary.current?.focus()); }
   }
   const hasErrors = Object.values(errors).some(Boolean);
   return <form className="contact-form" noValidate onSubmit={submit} aria-describedby="contact-form-note"><p className="eyebrow">Let’s start a conversation</p><h2>We’d love to hear from you.</h2><p id="contact-form-note" className="form-description">This is a form preview. Your message will not be sent or saved.</p>

@@ -13,6 +13,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const menuButton = useRef<HTMLButtonElement>(null);
   const mobileNav = useRef<HTMLElement>(null);
+  useEffect(() => { setOpen(false); }, [pathname]);
   useEffect(() => {
     function escape(event: KeyboardEvent) { if (event.key === "Escape") { setOpen(false); menuButton.current?.focus(); } }
     function outside(event: PointerEvent) { if (!mobileNav.current?.contains(event.target as Node) && !menuButton.current?.contains(event.target as Node)) setOpen(false); }
