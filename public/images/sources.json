@@ -1,0 +1,32 @@
+[
+  {
+    "file": "deluxe.webp",
+    "source": "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=82&fm=webp",
+    "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  },
+  {
+    "file": "standard.webp",
+    "source": "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=82&fm=webp",
+    "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  },
+  {
+    "file": "retreat.webp",
+    "source": "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1000&q=82&fm=webp",
+    "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  },
+  {
+    "file": "dining.webp",
+    "source": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1100&q=82&fm=webp",
+    "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  },
+  {
+    "file": "hero.webp",
+    "source": "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1920&q=85&fm=webp",
+    "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  },
+  {
+    "file": "suite.webp",
+    "source": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=82&fm=webp",
+    "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  }
+]
