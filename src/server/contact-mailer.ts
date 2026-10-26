@@ -22,8 +22,20 @@ export async function sendContactMail(message: ContactMessage, config: MailConfi
       signal: AbortSignal.timeout(12_000),
       cache: "no-store",
     });
-    if (!sent.ok) return "failed";
+    if (!sent.ok) {
+      const error = await sent.json().catch(() => ({}));
+      const message = typeof error.message === "string" ? error.message.toLowerCase() : "";
+      const reason = message.includes("domain") && message.includes("not verified") ? "sender_domain_not_verified"
+        : message.includes("only send testing emails") ? "resend_testing_restriction"
+        : typeof error.name === "string" && /^[a-z_]{1,80}$/.test(error.name) ? error.name : "provider_rejection";
+      // No addresses, message bodies, authorization headers, or provider text.
+      console.error(JSON.stringify({ event: "contact_mail_rejected", status: sent.status, reason, reference: id }));
+      return "failed";
+    }
     const body: unknown = await sent.json();
     return body && typeof body === "object" && "id" in body && typeof body.id === "string" && body.id ? "accepted" : "failed";
-  } catch { return "failed"; }
+  } catch {
+    console.error(JSON.stringify({ event: "contact_mail_failed", reason: "network_or_timeout", reference: id }));
+    return "failed";
+  }
 }

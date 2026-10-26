@@ -54,6 +54,13 @@ test("configured public origin is enforced behind a reverse proxy", async () => 
   assert.equal((await post(request())).status, 403);
   assert.equal((await post(request(message, { origin: "https://public.example" }))).status, 200);
 });
+test("standalone internal localhost alias uses the actual request Host without accepting a different browser origin", async () => {
+  const post = handler();
+  const actual = () => new Request("http://localhost:3010/api/contact", { method: "POST", headers: { Host: "127.0.0.1:3010", Origin: "http://127.0.0.1:3010", "Content-Type": "application/json", "Idempotency-Key": randomUUID() }, body: JSON.stringify(message) });
+  assert.equal((await post(actual())).status, 200);
+  const hostile = actual(); hostile.headers.set("Origin", "http://attacker.example");
+  assert.equal((await post(hostile)).status, 403);
+});
 test("content type, JSON shape, field types, and recipient override are checked", async () => {
   const post = handler();
   assert.equal((await post(request(message, { headers: { "Content-Type": "text/plain" } }))).status, 415);

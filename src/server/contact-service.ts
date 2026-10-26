@@ -54,7 +54,17 @@ export function createContactHandler(deps: Dependencies) {
   return async function handle(request: Request): Promise<Response> {
     const config = deps.config();
     let origin: string;
-    try { const url = new URL(config.siteOrigin || request.url); if (!["http:", "https:"].includes(url.protocol)) throw new Error("origin"); origin = url.origin; }
+    try {
+      const internal = new URL(request.url);
+      // Next's standalone Request URL may use localhost even when the browser
+      // reached 127.0.0.1. Compare with the actual Host, not that internal alias.
+      // A configured public origin is authoritative behind a reverse proxy.
+      const host = request.headers.get("host");
+      if (host && (host.length > 255 || !/^[a-z0-9.\[\]:-]+$/i.test(host))) throw new Error("host");
+      const url = new URL(config.siteOrigin || (host ? `${internal.protocol}//${host}` : request.url));
+      if (!["http:", "https:"].includes(url.protocol)) throw new Error("origin");
+      origin = url.origin;
+    }
     catch { return response(503, { error: "We cannot send your message right now. Please call or email the hotel." }); }
     if (request.headers.get("origin") !== origin || request.headers.get("sec-fetch-site") === "cross-site") return response(403, { error: "Please send your message from the hotel website." });
     if (request.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !== "application/json") return response(415, { error: "Please use the contact form to send your message." });
