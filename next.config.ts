@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "export",
+  basePath: "/mdh-website",
+  images: {
+    unoptimized: true,
+  },
   poweredByHeader: false,
   async headers() {
     return [{ source: "/:path*", headers: [
@@ -12,4 +17,8 @@ const nextConfig: NextConfig = {
     ] }];
   }
 };
+
 export default nextConfig;
+
+
+
