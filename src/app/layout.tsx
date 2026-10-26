@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { BookingProvider } from "@/components/booking";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
@@ -16,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" className={`${display.variable} ${sans.variable}`}><body><a className="skip-link" href="#main-content">Skip to content</a><BookingProvider><SiteHeader />{children}<SiteFooter /></BookingProvider></body></html>;
+  return <html lang="en" className={`${display.variable} ${sans.variable}`}><body id="top"><a className="skip-link" href="#main-content">Skip to content</a><SiteHeader />{children}<SiteFooter /></body></html>;
 }
