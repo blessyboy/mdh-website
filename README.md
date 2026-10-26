@@ -4,7 +4,7 @@ Responsive seven-page hotel website preview built with Next.js App Router, React
 
 ## Start locally
 
-Requires Node.js 20.9 or newer and npm. On Windows PowerShell:
+Use Node.js 24 LTS and npm (`.nvmrc` selects 24). The installed audit tooling requires at least Node.js 22.19. On Windows PowerShell:
 
 ```powershell
 npm.cmd ci
@@ -20,7 +20,7 @@ npm.cmd run build
 npm.cmd start
 ```
 
-The form tests use Node's TypeScript stripping; use Node.js 22.18+ or newer for `npm.cmd test`. With the server running, run `npm.cmd run check:routes` to check every page, internal link, rendered image variant, booking prefill, malformed booking query, and the 404 response. Override `PREVIEW_URL` to check a different server.
+The form tests use Node's TypeScript stripping. With the server running, run `npm.cmd run check:routes` to check every page, internal link, rendered image variant, booking prefill, malformed booking query, and the 404 response. Override `PREVIEW_URL` to check a different server.
 
 ## Current scope
 
@@ -48,6 +48,8 @@ Booking dates are validated locally, including check-out after check-in. Night c
 - `src/components/booking.tsx`: booking links and homepage booking bar; `BookButton` accepts an optional room preference, label, variant, and className. Example: `<BookButton room="Deluxe Room" variant="outline">Plan your stay</BookButton>`. Navigation now leads to `/booking` rather than the former booking modal.
 - `src/components/page-intro.tsx`: shared image banner, page heading and breadcrumb; `PageCTA` provides a reusable room-exploration prompt.
 - `src/components/room-filters.tsx`, `booking-form.tsx`, and `contact-form.tsx`: isolated client-side collection and form behavior.
+- `src/components/preview-form.tsx`: shared hydration gate that prevents native form submission before the local demo handler is ready, including when JavaScript is unavailable.
+- `src/components/modal.tsx`: native dialog wrapper with explicit forward/backward Tab containment; callers retain ownership of open/close state and focus restoration.
 - `src/lib/stay.ts` and `contact.ts`: pure validation functions, date calculations, and query normalization covered by tests.
 - Room cards, gallery, and newsletter isolate their interactive behavior. Native modal dialogs provide keyboard containment and Escape dismissal; focus is restored to the opening control.
 - `src/data/hotel.ts`: typed navigation, four room concepts and sample capacities/features, gallery categories and content. `Gallery` accepts `items` and `filterable` props so the same lightbox serves the homepage, About, and full Gallery page.
@@ -59,8 +61,35 @@ The page remains server-rendered; only interactive components use client-side Re
 
 This phase needs no database, authentication, or backend API. When real booking is introduced, place availability and reservation writes behind a separate service, with authoritative server validation and inventory controls. Do not turn the preview summary into a reservation confirmation. The frontend can deploy separately from that future service.
 
-Before public launch: confirm hotel content and image rights; replace the low-resolution logo if a better original is available; add verified contact details, privacy information, and booking policies; connect newsletter/booking services; configure the real canonical domain, social image, and verified Hotel structured data; remove preview noindex directives; perform production build, accessibility, mobile-browser, and performance checks. No Lighthouse score or completed production deployment is claimed.
+Before public launch: confirm hotel content and image rights; replace the low-resolution logo if a better original is available; add verified contact details, privacy information, and booking policies; connect newsletter/booking services; configure the real canonical domain, social image, and verified Hotel structured data; complete hosted/cross-browser and manual assistive-technology checks, then deliberately remove preview noindex directives. See [the production-readiness report](docs/production-readiness.md) for findings and unresolved release gates. No public deployment is claimed.
 
 ## Verification for this preview
 
-TypeScript checks, five form/date validation tests, and the production build passed. HTTP checks passed against development and production servers for all seven pages, 27 internal links, seven image variants, room/date/guest booking prefills, malformed/repeated query parameters, and the 404 response. These checks validate server-rendered responses, not browser interaction. Automated browser inspection could not run because the browser tool failed to initialize in this environment. Visual, keyboard, and interactive browser verification remain pending.
+TypeScript, five validation tests, production build, standalone-server execution, HTTP route/link checks, and security-header/optimizer tests passed. Chrome browser audits passed on all seven pages at 320px, 390px, and 1440px widths with zero axe violations, no detected overflow/broken images/JavaScript errors, and nine passing interaction scenarios. Desktop and mobile screenshots were inspected. These automated results do not establish full WCAG compliance, Safari/Firefox/mobile-device compatibility, field performance, or hosted infrastructure readiness. The final Lighthouse results are recorded in [the audit summary](docs/audit-summary.json).
+
+To repeat the browser and performance audits, start a **production** server in another terminal, then run:
+
+```powershell
+$env:PREVIEW_URL = 'http://127.0.0.1:3000'
+# Optional when Chrome is installed elsewhere:
+# $env:CHROME_PATH = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+npm.cmd run check:routes
+npm.cmd run audit:http
+npm.cmd run audit:browser
+npm.cmd run audit:performance
+```
+
+The scripts use the locally installed Chrome without downloading another browser. Browser screenshots and machine-readable/Lighthouse HTML reports are written to `qa/`, which is ignored by Git. Run performance audits sequentially, without another heavy build/audit running, and confirm results again on hosted staging. Preview noindex deliberately lowers SEO scores.
+
+## Deployment preparation
+
+The frontend uses Next.js standalone output with a process health endpoint at `/api/health`. The non-root multi-stage `Dockerfile` copies only traced runtime files, static chunks, and public assets. Build/run commands, when Docker is available:
+
+```powershell
+docker build -t mdh-website .
+docker run --rm --init -p 127.0.0.1:3000:3000 mdh-website
+```
+
+Docker is not installed in the audit environment, so those commands and container execution are not verified. The standalone Node runtime was tested directly. `.github/workflows/verify.yml` defines installation, tests, production build, HTTP/browser/security/performance checks, and retained evidence. GitHub-hosted execution and deployment remain unverified. Node 24 LTS is selected for deployment; local checks used Node 26.10.0.
+
+Production headers include a baseline CSP, anti-framing, nosniff, referrer/permissions policy, and HSTS configuration. The CSP intentionally permits inline bootstrap scripts/styles to retain static rendering; it is not a strict XSS prevention policy. HTTPS enforcement, monitoring, rollback, and the future separate backend remain release tasks described in the readiness report.
