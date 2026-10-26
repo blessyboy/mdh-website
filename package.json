@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/forms.test.mjs",
+    "test": "node --experimental-strip-types --test tests/forms.test.mjs tests/contact-api.test.mjs",
     "check:routes": "node scripts/verify-routes.mjs",
     "check:room-rates": "node scripts/check-room-rates.mjs",
     "audit:browser": "node scripts/audit-browser.mjs",
