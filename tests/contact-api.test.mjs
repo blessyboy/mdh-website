@@ -37,6 +37,12 @@ test("missing email configuration fails closed without claiming success", async 
   const result = await post(request()); assert.equal(result.status, 503); assert.equal(sends, 0);
   assert.equal((await result.json()).ok, undefined);
 });
+test("Resend development sender is restricted to loopback sites", async () => {
+  const post = handler({ config: () => ({ ...config, from: "onboarding@resend.dev" }) });
+  assert.equal((await post(request())).status, 503);
+  const local = new Request("http://localhost:3010/api/contact", { method: "POST", headers: { Host: "127.0.0.1:3010", Origin: "http://127.0.0.1:3010", "Content-Type": "application/json", "Idempotency-Key": randomUUID() }, body: JSON.stringify(message) });
+  assert.equal((await post(local)).status, 200);
+});
 test("server validation rejects blank fields, invalid email and header injection", async () => {
   const post = handler();
   const invalid = await post(request({ ...message, name: " ", email: "bad\r\nBcc: other@example.com", message: "short" }));

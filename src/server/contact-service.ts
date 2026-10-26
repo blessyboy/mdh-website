@@ -89,6 +89,7 @@ export function createContactHandler(deps: Dependencies) {
     if (Object.keys(errors).length) return response(422, { error: "Please check the highlighted fields.", fields: errors });
     const id = request.headers.get("idempotency-key") || "";
     if (!uuid.test(id)) return response(400, { error: "Please refresh the page and try again." });
+    if (config.from === "onboarding@resend.dev" && !["127.0.0.1", "localhost", "[::1]"].includes(new URL(origin).hostname)) return response(503, { error: "We cannot send your message right now. Please call or email the hotel directly." });
     if (!config.apiKey || !config.from || !config.to) return response(503, { error: "We cannot send your message right now. Please call or email the hotel directly." });
     const digest = hash(JSON.stringify(message));
     const prior = requests.get(id);
