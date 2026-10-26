@@ -13,6 +13,7 @@ type Dependencies = {
 const MAX_BYTES = 16_384;
 const WINDOW = 10 * 60_000;
 const fields = ["name", "email", "phone", "subject", "message"] as const;
+const allowedFields = new Set<string>([...fields, "website"]);
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const hash = (value: string) => createHash("sha256").update(value).digest("hex");
 
@@ -53,7 +54,7 @@ export function createContactHandler(deps: Dependencies) {
   return async function handle(request: Request): Promise<Response> {
     const config = deps.config();
     let origin: string;
-    try { origin = new URL(config.siteOrigin || request.url).origin; }
+    try { const url = new URL(config.siteOrigin || request.url); if (!["http:", "https:"].includes(url.protocol)) throw new Error("origin"); origin = url.origin; }
     catch { return response(503, { error: "We cannot send your message right now. Please call or email the hotel." }); }
     if (request.headers.get("origin") !== origin || request.headers.get("sec-fetch-site") === "cross-site") return response(403, { error: "Please send your message from the hotel website." });
     if (request.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !== "application/json") return response(415, { error: "Please use the contact form to send your message." });
@@ -71,7 +72,7 @@ export function createContactHandler(deps: Dependencies) {
     catch (error) { return response(error instanceof Error && error.message === "large" ? 413 : 400, { error: "We could not read your message. Please check the form and try again." }); }
     if (!input || typeof input !== "object" || Array.isArray(input)) return response(400, { error: "Please check your message and try again." });
     const record = input as Record<string, unknown>;
-    if (Object.keys(record).some(key => ![...fields, "website"].includes(key as typeof fields[number])) || fields.some(key => typeof record[key] !== "string") || (record.website !== undefined && typeof record.website !== "string")) return response(400, { error: "Please check the form fields and try again." });
+    if (Object.keys(record).some(key => !allowedFields.has(key)) || fields.some(key => typeof record[key] !== "string") || (record.website !== undefined && typeof record.website !== "string")) return response(400, { error: "Please check the form fields and try again." });
     if (record.website) return response(400, { error: "We could not send this message. Please call or email the hotel." });
     const message = Object.fromEntries(fields.map(key => [key, (record[key] as string).trim()])) as ContactMessage;
     const errors = deps.validate(message);

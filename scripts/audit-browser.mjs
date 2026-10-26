@@ -101,18 +101,19 @@ try {
     await page.keyboard.press("Escape");
     assert.equal(await trigger.evaluate(el => el === document.activeElement), true);
   });
-  await check("contact validation, associated errors, and local-only success", async () => {
+  await check("contact validation and simulated email acceptance", async () => {
     await page.goto(base + "/contact", { waitUntil: "networkidle" });
-    await page.getByRole("button", { name: "Preview your enquiry" }).click();
+    await page.getByRole("button", { name: "Send message", exact: true }).click();
     assert.equal(await page.locator(".form-error[role=alert]").isVisible(), true);
     assert.equal(await page.locator(".form-error[role=alert]").evaluate(el => el === document.activeElement), true);
     await axe("contact validation errors");
     await page.locator("#contact-name").fill("Test Guest"); await page.locator("#contact-email").fill("test@example.com");
     await page.locator("#contact-subject").selectOption("General enquiry"); await page.locator("#contact-message").fill("A local form validation check only.");
-    const posts = []; page.on("request", request => { if (request.method() === "POST") posts.push(request.url()); });
-    await page.getByRole("button", { name: "Preview your enquiry" }).click();
-    assert.equal(await page.getByText("Your enquiry passed validation.", { exact: false }).isVisible(), true);
-    assert.equal(posts.length, 0);
+    const posts = [];
+    await page.route("**/api/contact", async route => { posts.push(route.request().postDataJSON()); await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, reference: "browser-simulation" }) }); });
+    await page.getByRole("button", { name: "Send message", exact: true }).click();
+    assert.equal(await page.getByText("Thank you. Your message has been submitted to the hotel.", { exact: false }).isVisible(), true);
+    assert.equal(posts.length, 1); assert.equal(posts[0].email, "test@example.com");
   });
   await check("booking prefill, dates, published rates, and local-only completion", async () => {
     await page.goto(base + "/booking?room=Suite&guests=6", { waitUntil: "networkidle" });
