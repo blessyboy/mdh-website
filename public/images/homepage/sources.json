@@ -18,5 +18,10 @@
     "source": "User-supplied DSC_1212 attachment",
     "file": "public/images/homepage/DSC_1212.jpg",
     "sha256": "b58f57ce4482b201c48d67f48f653395c37cbacea534f74c82834e986cdc558a"
+  },
+  {
+    "source": "User-supplied DSC_1168 attachment",
+    "file": "public/images/homepage/DSC_1168.jpg",
+    "sha256": "36679d479274b5d62b7b5078cfbef58aa16e77ccfcd322e8f5e32e680b6da9a7"
   }
 ]
