@@ -2,10 +2,10 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CarFront, Check, Dumbbell, Flower2, Plane, Presentation, Utensils, Waves, Wifi, X } from "lucide-react";
+import { ArrowRight, CarFront, Check, Flower2, Presentation, Utensils, Waves, Wifi, X } from "lucide-react";
 import { hotelExperiences, type HotelExperience } from "@/data/experiences";
 import { Modal } from "./modal";
-const icons = { dining: Utensils, pool: Waves, fitness: Dumbbell, wellness: Flower2, meetings: Presentation, wifi: Wifi, shuttle: Plane, parking: CarFront };
+const icons = { dining: Utensils, pool: Waves, meetings: Presentation, wifi: Wifi, parking: CarFront };
 
 export function ExperienceGrid({ experiences = hotelExperiences }: { experiences?: HotelExperience[] }) {
   const grid = useRef<HTMLDivElement>(null);
