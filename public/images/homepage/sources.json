@@ -13,5 +13,10 @@
     "source": "homepage images/DSC_1136.jpg",
     "file": "public/images/homepage/hotel-entrance.jpg",
     "sha256": "158cb97fe8b59d134e4383b12663c1b41f99e3094a0b1bf6a3b0f78d96c5e2b0"
+  },
+  {
+    "source": "User-supplied DSC_1212 attachment",
+    "file": "public/images/homepage/DSC_1212.jpg",
+    "sha256": "b58f57ce4482b201c48d67f48f653395c37cbacea534f74c82834e986cdc558a"
   }
 ]
