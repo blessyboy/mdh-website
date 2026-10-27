@@ -1,0 +1,17 @@
+[
+  {
+    "source": "homepage images/DSC_1132.jpg",
+    "file": "public/images/homepage/hotel-exterior.jpg",
+    "sha256": "cb9b9bfb8577b6a1a50b906a25bad076248eaab233fcd59ffbf259ad9c45b6e8"
+  },
+  {
+    "source": "homepage images/DSC_1134.jpg",
+    "file": "public/images/homepage/hotel-gardens.jpg",
+    "sha256": "54445d91d4c9cb3d86cd5bc11fc14c36344702cdd049a4cf448e902eda65db6f"
+  },
+  {
+    "source": "homepage images/DSC_1136.jpg",
+    "file": "public/images/homepage/hotel-entrance.jpg",
+    "sha256": "158cb97fe8b59d134e4383b12663c1b41f99e3094a0b1bf6a3b0f78d96c5e2b0"
+  }
+]

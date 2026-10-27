@@ -10,9 +10,9 @@
 export { roomCollection, rooms, roomTypes } from "./rooms";
 
 export const gallery = [
-  { src: "/images/retreat.webp", label: "A moment of calm", alt: "Illustrative garden pool surrounded by greenery" },
-  { src: "/images/dining.webp", label: "Gather around the table", alt: "Illustrative restaurant with warm wood and natural light" },
-  { src: "/images/standard.webp", label: "Your own little retreat", alt: "Illustrative bedroom with warm timber and a garden view" },
+  { src: "/images/homepage/hotel-exterior.jpg", label: "A warm Meridian welcome", alt: "Meridian Drive Hotel exterior with red roofs, palm trees, and a paved courtyard" },
+  { src: "/images/homepage/hotel-gardens.jpg", label: "Room to relax", alt: "Meridian Drive Hotel gardens with lawns, palms, and pathways" },
+  { src: "/images/homepage/hotel-entrance.jpg", label: "Make yourself at home", alt: "Meridian Drive Hotel entrance with tropical planting and a paved forecourt" },
 ] as const;
 
 export type GalleryItem = { src: string; label: string; alt: string; category?: string };
