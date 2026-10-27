@@ -8,7 +8,7 @@ export function contactMailPayload(message: ContactMessage, config: MailConfig, 
     to: [config.to],
     reply_to: message.email,
     subject: `Hotel website enquiry: ${message.subject}`,
-    text: ["New enquiry from the Meridian Drive Hotel website", `Reference: ${id}`, "", `Name: ${message.name}`, `Email: ${message.email}`, `Phone: ${message.phone || "Not provided"}`, `Subject: ${message.subject}`, "", message.message].join("\n"),
+    text: ["New enquiry from the Meridian Drive Hotel website", `Reference: ${id}`, "", `Name: ${message.name}`, `Email: ${message.email}`, `Phone: ${message.phone || "Not provided"}`, `Subject: ${message.subject}`, `Preferred check-in: ${message.checkIn || "Not specified"}`, `Preferred check-out: ${message.checkOut || "Not specified"}`, `Privacy policy agreed: ${message.privacyConsent === true ? "Yes" : "No"}`, "", message.message].join("\n"),
   };
 }
 

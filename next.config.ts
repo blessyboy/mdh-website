@@ -26,6 +26,7 @@ const nextConfig: NextConfig = {
       "font-src 'self'",
       `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
       "object-src 'none'",
+      "frame-src https://www.google.com",
       "base-uri 'self'",
       "form-action 'self'",
       "frame-ancestors 'none'",

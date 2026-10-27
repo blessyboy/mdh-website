@@ -36,10 +36,10 @@ test("booking links preserve valid selections and normalize hostile or repeated 
   assert.deepEqual(normalizeStay(stay, Object.keys(capacities)), stay);
   assert.deepEqual(normalizeStay({ room: ["Standard Room", "Executive Suite"], guests: "999", checkIn: "2026-02-30", checkOut: "<script>" }, Object.keys(capacities)), { room: "Standard Room", guests: "2", checkIn: "", checkOut: "" });
 });
-const message = { name: "A Guest", email: "guest@example.com", phone: "", subject: "Rooms & reservations", message: "I would like to ask about a future stay." };
+const message = { privacyConsent: true, name: "A Guest", email: "guest@example.com", phone: "", subject: "Room Reservation", message: "I would like to ask about a future stay." };
 test("contact validation accepts an optional phone and catches all required fields", () => {
   assert.deepEqual(validateContact(message), {});
-  assert.equal(Object.keys(validateContact({ name: " ", email: "invalid", phone: "abcdefg", subject: "unexpected", message: "short" })).length, 5);
+  assert.equal(Object.keys(validateContact({ name: " ", email: "invalid", phone: "abcdefg", subject: "unexpected", message: "short" })).length, 6);
   assert.deepEqual(validateContact({ ...message, phone: "+233 20 123 4567" }), {});
   assert.ok(validateContact({ ...message, message: "a".repeat(3001) }).message);
 });

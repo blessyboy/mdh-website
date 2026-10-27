@@ -6,7 +6,7 @@ import { createContactHandler } from "../src/server/contact-service.ts";
 import { sendContactMail, contactMailPayload } from "../src/server/contact-mailer.ts";
 
 const config = { apiKey: "unit-test-secret-not-real", from: "website@example.com", to: "blessyarthur@gmail.com" };
-const message = { name: "Test Guest", email: "guest@example.com", phone: "+233244510133", subject: "General enquiry", message: "A test enquiry for local verification only." };
+const message = { privacyConsent: true, name: "Test Guest", email: "guest@example.com", phone: "+233244510133", subject: "General Inquiry", message: "A test enquiry for local verification only." };
 function request(body = message, { origin = "https://hotel.example", key = randomUUID(), headers = {}, raw } = {}) {
   return new Request("https://hotel.example/api/contact", { method: "POST", headers: { Origin: origin, "Content-Type": "application/json", "Idempotency-Key": key, ...headers }, body: raw ?? JSON.stringify(body) });
 }
@@ -116,4 +116,15 @@ test("trusted-proxy IP limits are opt-in and independent of claimed email", asyn
   const post = handler({ config: () => ({ ...config, trustProxy: true }) });
   for(let i=0;i<5;i++) assert.equal((await post(request({ ...message, email: `visitor${i}@example.com` }, { headers: { "X-Forwarded-For": "192.0.2.1" } }))).status, 200);
   assert.equal((await post(request({ ...message, email: "another@example.com" }, { headers: { "X-Forwarded-For": "192.0.2.1" } }))).status, 429);
+});
+
+test("stay dates and privacy consent are validated on the server and included in mail", async () => {
+  let received; const post = handler({send:async value => {received=value;return "accepted";}});
+  assert.equal((await post(request({...message,privacyConsent:false}))).status,422);
+  assert.equal((await post(request({...message,privacyConsent:"true"}))).status,400);
+  assert.equal((await post(request({...message,checkIn:42}))).status,400);
+  for(const dates of [{checkIn:"2028-02-30"},{checkIn:"2020-01-01"},{checkOut:"2028-12-12"},{checkIn:"2028-12-12",checkOut:"2028-12-10"},{checkIn:"2028-12-12",checkOut:"2028-12-12"}]) assert.equal((await post(request({...message,...dates}))).status,422);
+  assert.equal((await post(request({...message,checkIn:"2028-12-10",checkOut:"2028-12-12"}))).status,200);
+  assert.equal(received.checkIn,"2028-12-10");assert.equal(received.checkOut,"2028-12-12");assert.equal(received.privacyConsent,true);
+  const payload=contactMailPayload(received,config,randomUUID());assert.ok(payload.text.includes("Preferred check-in: 2028-12-10"));assert.ok(payload.text.includes("Preferred check-out: 2028-12-12"));assert.ok(payload.text.includes("Privacy policy agreed: Yes"));
 });

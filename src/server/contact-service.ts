@@ -13,7 +13,7 @@ type Dependencies = {
 const MAX_BYTES = 16_384;
 const WINDOW = 10 * 60_000;
 const fields = ["name", "email", "phone", "subject", "message"] as const;
-const allowedFields = new Set<string>([...fields, "website"]);
+const allowedFields = new Set<string>([...fields, "website", "checkIn", "checkOut", "privacyConsent"]);
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const hash = (value: string) => createHash("sha256").update(value).digest("hex");
 
@@ -83,8 +83,12 @@ export function createContactHandler(deps: Dependencies) {
     if (!input || typeof input !== "object" || Array.isArray(input)) return response(400, { error: "Please check your message and try again." });
     const record = input as Record<string, unknown>;
     if (Object.keys(record).some(key => !allowedFields.has(key)) || fields.some(key => typeof record[key] !== "string") || (record.website !== undefined && typeof record.website !== "string")) return response(400, { error: "Please check the form fields and try again." });
+    if (["checkIn", "checkOut"].some(key => record[key] !== undefined && typeof record[key] !== "string") || (record.privacyConsent !== undefined && typeof record.privacyConsent !== "boolean")) return response(400, { error: "Please check the form fields and try again." });
     if (record.website) return response(400, { error: "We could not send this message. Please call or email the hotel." });
-    const message = Object.fromEntries(fields.map(key => [key, (record[key] as string).trim()])) as ContactMessage;
+    const message: ContactMessage = { name: (record.name as string).trim(), email: (record.email as string).trim(), phone: (record.phone as string).trim(), subject: (record.subject as string).trim(), message: (record.message as string).trim() };
+    message.checkIn = typeof record.checkIn === "string" ? record.checkIn.trim() : "";
+    message.checkOut = typeof record.checkOut === "string" ? record.checkOut.trim() : "";
+    message.privacyConsent = record.privacyConsent === true;
     const errors = deps.validate(message);
     if (Object.keys(errors).length) return response(422, { error: "Please check the highlighted fields.", fields: errors });
     const id = request.headers.get("idempotency-key") || "";

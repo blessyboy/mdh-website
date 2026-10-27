@@ -18,7 +18,7 @@ try {
     });
     for(const email of ["info@meridaindrivehotel.com","meridaindrivehotel@gmail.com"]) assert.equal(await page.locator(`.contact-details a[href="mailto:${email}"]`).count(),1);
     for(const phone of ["+233244510133","+233264657812","+233550761141"]) assert.equal(await page.locator(`.contact-details a[href="tel:${phone}"]`).count(),1);
-    assert.equal(await page.locator('.location-card a[href="https://ghanapostgps.com/map?gps=GN01891152"]').count(),1);
+    assert.equal(await page.locator('.inquiry-map a[href="https://ghanapostgps.com/map?gps=GN01891152"]').count(),1);
     assert.equal(await page.getByText("GN-0189-1152",{exact:true}).count(),2);
     const overflow = await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth); assert.equal(overflow,false);
     const axe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa","wcag22aa","best-practice"]).analyze();
@@ -29,19 +29,19 @@ try {
       let mode="failure", release; const keys=[]; const gate=new Promise(resolve=>{release=resolve;});
       await page.route("**/api/contact", async route=>{
         keys.push(route.request().headers()["idempotency-key"]);
-        const body=route.request().postDataJSON(); assert.equal(body.to,undefined); assert.equal(body.email,"test@example.com");
+        const body=route.request().postDataJSON(); assert.equal(body.to,undefined); assert.equal(body.email,"test@example.com"); assert.equal(body.privacyConsent,true); assert.equal(body.checkIn,"2028-12-10"); assert.equal(body.checkOut,"2028-12-12");
         if(mode==="success") await gate;
         await route.fulfill({status:mode==="success"?200:503,contentType:"application/json",body:JSON.stringify(mode==="success"?{ok:true,reference:"browser-test"}:{error:"We cannot send your message right now. Please call or email the hotel directly."})});
       });
-      await page.getByRole("button",{name:"Send message",exact:true}).click(); assert.equal(keys.length,0);
+      await page.getByRole("button",{name:"Send Inquiry",exact:true}).click(); assert.equal(keys.length,0);
       await page.locator("#contact-name").fill("Browser test"); await page.locator("#contact-email").fill("test@example.com");
-      await page.locator("#contact-subject").selectOption("General enquiry"); await page.locator("#contact-message").fill("A simulated browser test; no email will be sent.");
-      await page.getByRole("button",{name:"Send message",exact:true}).click(); await page.locator(".contact-server-error").waitFor();
+      await page.locator("#contact-subject").selectOption("General Inquiry"); await page.locator("#contact-privacyConsent").check(); await page.locator("#contact-checkIn").fill("2028-12-10"); await page.locator("#contact-checkOut").fill("2028-12-12"); await page.locator("#contact-message").fill("A simulated browser test; no email will be sent.");
+      await page.getByRole("button",{name:"Send Inquiry",exact:true}).click(); await page.locator(".contact-server-error").waitFor();
       assert.equal(await page.locator("#contact-message").inputValue(),"A simulated browser test; no email will be sent.");
       const failedAxe=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa","wcag22aa"]).analyze(); result.violations.push(...failedAxe.violations.map(v=>({state:"provider failure",id:v.id})));
       mode="success";
-      await page.getByRole("button",{name:"Send message",exact:true}).click();
-      const sending=page.getByRole("button",{name:"Sending message",exact:true}); await sending.waitFor(); assert.equal(await sending.isDisabled(),true);
+      await page.getByRole("button",{name:"Send Inquiry",exact:true}).click();
+      const sending=page.getByRole("button",{name:"Sending Inquiry",exact:true}); await sending.waitFor(); assert.equal(await sending.isDisabled(),true);
       assert.equal(await page.locator("#contact-name").isDisabled(),true);
       release(); await page.getByText("Thank you. Your message has been submitted to the hotel.",{exact:false}).waitFor();
       assert.equal(keys.length,2); assert.equal(keys[0],keys[1]); assert.equal(await page.locator("#contact-email").inputValue(),"");
