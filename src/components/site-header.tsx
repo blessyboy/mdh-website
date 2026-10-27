@@ -17,7 +17,7 @@ export function SiteHeader() {
   useEffect(() => {
     function escape(event: KeyboardEvent) { if (event.key === "Escape" && menuButton.current?.getAttribute("aria-expanded") === "true") { setOpen(false); menuButton.current?.focus(); } }
     function outside(event: PointerEvent) { if (!mobileNav.current?.contains(event.target as Node) && !menuButton.current?.contains(event.target as Node)) setOpen(false); }
-    function resize() { if (window.innerWidth >= 1100) setOpen(false); }
+    function resize() { if (window.innerWidth >= 1280) setOpen(false); }
     document.addEventListener("keydown", escape); document.addEventListener("pointerdown", outside); window.addEventListener("resize", resize);
     return () => { document.removeEventListener("keydown", escape); document.removeEventListener("pointerdown", outside); window.removeEventListener("resize", resize); };
   }, []);

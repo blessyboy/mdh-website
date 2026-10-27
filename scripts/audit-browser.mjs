@@ -8,11 +8,24 @@ const label = process.env.AUDIT_LABEL || "latest";
 const executablePath = process.env.CHROME_PATH || "C:/Program Files/Google/Chrome/Application/chrome.exe";
 await mkdir("qa", { recursive: true });
 const browser = await chromium.launch({ executablePath, headless: true });
-const report = { timestamp: new Date().toISOString(), base, browser: browser.version(), pages: [], interactions: [], consoleErrors: [], violations: [] };
-const routes = ["/", "/about", "/rooms", "/amenities", "/gallery", "/contact", "/booking"];
+const report = { timestamp: new Date().toISOString(), base, browser: browser.version(), pages: [], interactions: [], consoleErrors: [], violations: [], typographyViolations: [] };
+const routes = ["/", "/about", "/rooms", "/amenities", "/gallery", "/contact", "/booking", "/policies/privacy", "/policies/terms", "/policies/cookies"];
 const viewports = process.env.AUDIT_INTERACTIONS_ONLY ? [] : [{ width: 1440, height: 1000 }, { width: 390, height: 844 }, { width: 320, height: 800 }];
 let page;
 async function axe(name) {
+  const small = await page.evaluate(() => {
+    const findings = [];
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const check = (element, text) => {
+      if (!element || !element.getClientRects().length || element.closest("script,style,noscript,svg,nextjs-portal,[aria-hidden=true],.sr-only")) return;
+      const style = getComputedStyle(element);
+      if (style.visibility !== "hidden" && parseFloat(style.fontSize) < 16) findings.push({ text: text.slice(0, 80), size: style.fontSize, className: element.className });
+    };
+    while (walker.nextNode()) if (walker.currentNode.textContent.trim()) check(walker.currentNode.parentElement, walker.currentNode.textContent.trim());
+    document.querySelectorAll("input,textarea,select,button").forEach(element => check(element, element.getAttribute("aria-label") || element.getAttribute("name") || element.textContent.trim()));
+    return findings;
+  });
+  report.typographyViolations.push(...small.map(item => ({ name, ...item })));
   const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"]).analyze();
   report.violations.push(...result.violations.map(v => ({ name, id: v.id, impact: v.impact, description: v.description, helpUrl: v.helpUrl, nodes: v.nodes.map(n => ({ target: n.target, summary: n.failureSummary })) })));
   return result.violations.length;
@@ -162,6 +175,6 @@ try {
   await writeFile(`qa/browser-${label}.json`, JSON.stringify(report, null, 2));
   await browser.close();
 }
-if (report.violations.length || report.pages.some(p => p.scrollWidth > p.width || p.h1 !== 1 || p.brokenImages.length) || report.consoleErrors.length) process.exitCode = 1;
+if (report.typographyViolations.length || report.violations.length || report.pages.some(p => p.scrollWidth > p.width || p.h1 !== 1 || p.brokenImages.length) || report.consoleErrors.length) process.exitCode = 1;
 console.log(`Saved qa/browser-${label}.json: ${report.violations.length} axe violations, ${report.interactions.length} interaction checks`);
 

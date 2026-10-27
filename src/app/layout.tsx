@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
+import "./readability.css";
 
 const display = localFont({ src: "../assets/fonts/cormorant.woff2", variable: "--font-display", display: "swap" });
 const sans = localFont({ src: "../assets/fonts/manrope.woff2", variable: "--font-body", display: "swap" });
