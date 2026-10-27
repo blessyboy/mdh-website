@@ -89,14 +89,14 @@ try {
     await page.keyboard.press("Escape");
     assert.equal(await trigger.evaluate(el => el === document.activeElement), true);
   });
-  await check("gallery category, empty state, lightbox keys and focus restoration", async () => {
+  await check("gallery category, lightbox keys and focus restoration", async () => {
     await page.goto(base + "/gallery", { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Events", exact: true }).click();
-    assert.equal(await page.getByRole("heading", { name: "More moments to come." }).isVisible(), true);
-    await page.getByRole("button", { name: "View all photographs" }).click();
-    const trigger = page.getByRole("button", { name: "Enlarge An invitation to escape", exact: true });
+    assert.equal(await page.locator(".gallery-tile").count(), 2);
+    await page.getByRole("button", { name: "All", exact: true }).click();
+    const trigger = page.getByRole("button", { name: "Enlarge A table for celebration", exact: true });
     await trigger.click(); await page.keyboard.press("ArrowRight");
-    assert.equal(await page.getByRole("dialog").getByRole("heading", { name: "A moment of calm" }).isVisible(), true);
+    assert.equal(await page.getByRole("dialog").getByRole("heading", { name: "Flavours to bring us together" }).isVisible(), true);
     await axe("gallery lightbox open");
     await page.keyboard.press("Escape");
     assert.equal(await trigger.evaluate(el => el === document.activeElement), true);

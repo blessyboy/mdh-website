@@ -1,0 +1,32 @@
+[
+  {
+    "source": "GALLERY/WhatsApp Image 2026-10-26 at 2.52.44 PM.jpeg",
+    "file": "public/images/gallery/celebration-buffet.jpg",
+    "sha256": "e3128e043a6962f0eaa9ee67030851403f01f98e35c7c62f3b50311333f47f54",
+    "use": "User-supplied gallery photograph; original image and watermark preserved"
+  },
+  {
+    "source": "GALLERY/WhatsApp Image 2026-10-26 at 2.53.51 PM.jpeg",
+    "file": "public/images/gallery/traditional-food-display.jpg",
+    "sha256": "f89924892ed98c5b51fb65ddb122b01e73ee8d66f63df92db5d16b1013327436",
+    "use": "User-supplied gallery photograph; original image and watermark preserved"
+  },
+  {
+    "source": "GALLERY/WhatsApp Image 2026-10-26 at 2.55.05 PM.jpeg",
+    "file": "public/images/gallery/red-carpet-arrival.jpg",
+    "sha256": "cfb6c98770d77d4dc495002839f7559ac52f72784083fc04187d981f28ce45fc",
+    "use": "User-supplied gallery photograph; original image and watermark preserved"
+  },
+  {
+    "source": "GALLERY/WhatsApp Image 2026-10-26 at 2.55.46 PM.jpeg",
+    "file": "public/images/gallery/event-refreshments.jpg",
+    "sha256": "7e31318fd331636d3e3cffafda64f6c187fc6e176f2645ebc4014e2ce6bf86a4",
+    "use": "User-supplied gallery photograph; original image and watermark preserved"
+  },
+  {
+    "source": "GALLERY/WhatsApp Image 2026-10-26 at 2.56.23 PM.jpeg",
+    "file": "public/images/gallery/live-music.jpg",
+    "sha256": "6765f4084c6ff00f2eeedf19382b20f4641dd26d9ad619ddca8abf8985eb8a31",
+    "use": "User-supplied gallery photograph; original image and watermark preserved"
+  }
+]
