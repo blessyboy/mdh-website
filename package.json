@@ -16,7 +16,8 @@
     "check:contact": "node scripts/check-contact-page.mjs",
     "audit:browser": "node scripts/audit-browser.mjs",
     "audit:performance": "node scripts/audit-performance.mjs",
-    "audit:http": "node scripts/audit-http.mjs"
+    "audit:http": "node scripts/audit-http.mjs",
+    "check:readability": "node scripts/check-readability.mjs after"
   },
   "dependencies": {
     "lucide-react": "1.61.0",
