@@ -28,5 +28,35 @@
     "file": "suite.webp",
     "source": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=82&fm=webp",
     "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  },
+  {
+    "file": "amenities/fitness.webp",
+    "source": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1000&q=82&fm=webp",
+    "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  },
+  {
+    "file": "amenities/wellness.webp",
+    "source": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=82&fm=webp",
+    "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  },
+  {
+    "file": "amenities/wifi.webp",
+    "source": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1000&q=82&fm=webp",
+    "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  },
+  {
+    "file": "amenities/transfer.webp",
+    "source": "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1000&q=82&fm=webp",
+    "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  },
+  {
+    "file": "amenities/parking.webp",
+    "source": "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=1000&q=82&fm=webp",
+    "use": "Illustrative stock photography; does not depict Meridian Drive Hotel"
+  },
+  {
+    "file": "amenities/conference.webp",
+    "source": "Our rooms/conference room.jpg",
+    "use": "Hotel-supplied conference room photograph; resized for web"
   }
 ]
