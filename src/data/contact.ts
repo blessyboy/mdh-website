@@ -1,5 +1,5 @@
 export const hotelContact = {
-  emails: ["info@meridaindrivehotel.com", "meridaindrivehotel@gmail.com"],
+  emails: ["info@meridiandrivehotel.com", "meridiandrivehotel@gmail.com"],
   phones: [
     { display: "(+233) 244510133", href: "tel:+233244510133" },
     { display: "(+233) 264657812", href: "tel:+233264657812" },

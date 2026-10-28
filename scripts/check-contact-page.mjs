@@ -16,7 +16,7 @@ try {
       for(let y=0;y<document.documentElement.scrollHeight;y+=innerHeight){scrollTo(0,y);await new Promise(r=>setTimeout(r,60));}
       await Promise.all([...document.images].filter(img=>img.getClientRects().length).map(img=>img.decode().catch(()=>{})));scrollTo(0,0);
     });
-    for(const email of ["info@meridaindrivehotel.com","meridaindrivehotel@gmail.com"]) assert.equal(await page.locator(`.contact-details a[href="mailto:${email}"]`).count(),1);
+    for(const email of ["info@meridiandrivehotel.com","meridiandrivehotel@gmail.com"]) assert.equal(await page.locator(`.contact-details a[href="mailto:${email}"]`).count(),1);
     for(const phone of ["+233244510133","+233264657812","+233550761141"]) assert.equal(await page.locator(`.contact-details a[href="tel:${phone}"]`).count(),1);
     assert.equal(await page.locator('.inquiry-map a[href="https://ghanapostgps.com/map?gps=GN01891152"]').count(),1);
     assert.equal(await page.getByText("GN-0189-1152",{exact:true}).count(),2);
